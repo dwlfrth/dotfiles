@@ -1,0 +1,48 @@
+--- 1	2018-12-21 12:16:26.000000000 -0500
++++ 2	2018-12-21 12:19:34.000000000 -0500
+@@ -180,6 +180,7 @@
+ 	config_add_int dynamic_vlan vlan_naming
+ 	config_add_string vlan_tagged_interface vlan_bridge
+ 	config_add_string vlan_file
++	config_add_string macaddr_acl
+ 
+ 	config_add_string 'key1:wepkey' 'key2:wepkey' 'key3:wepkey' 'key4:wepkey' 'password:wpakey'
+ 
+@@ -228,7 +229,7 @@
+ 		wps_pushbutton wps_label ext_registrar wps_pbc_in_m1 wps_ap_setup_locked \
+ 		wps_independent wps_device_type wps_device_name wps_manufacturer wps_pin \
+ 		macfilter ssid wmm uapsd hidden short_preamble rsn_preauth \
+-		iapp_interface eapol_version dynamic_vlan ieee80211w nasid \
++		iapp_interface eapol_version dynamic_vlan macaddr_acl ieee80211w nasid \
+ 		acct_server acct_secret acct_port acct_interval \
+ 		bss_load_update_period chan_util_avg_period
+ 
+@@ -310,6 +311,10 @@
+ 			[ "$eapol_version" -ge "1" -a "$eapol_version" -le "2" ] && append bss_conf "eapol_version=$eapol_version" "$N"
+ 
+ 			wps_possible=1
++
++			[ -n "$macaddr_acl" ] && {
++				vlan_possible=1
++			}
+ 		;;
+ 		eap)
+ 			json_get_vars \
+@@ -535,6 +540,17 @@
+ 		}
+ 	}
+ 
++	[ -n "$macaddr_acl" ] && {
++		append bss_conf "macaddr_acl=$macaddr_acl" "$N"
++		json_get_vars auth_server auth_port auth_secret acct_server acct_port acct_secret
++		append bss_conf "auth_server_addr=$auth_server" "$N"
++		append bss_conf "auth_server_port=$auth_port" "$N"
++		append bss_conf "auth_server_shared_secret=$auth_secret" "$N"
++		append bss_conf "acct_server_addr=$acct_server" "$N"
++		append bss_conf "acct_server_port=$acct_port" "$N"
++		append bss_conf "acct_server_shared_secret=$acct_secret" "$N"
++	}
++
+ 	append "$var" "$bss_conf" "$N"
+ 	return 0
+ }
