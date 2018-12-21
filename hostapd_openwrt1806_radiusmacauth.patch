@@ -1,5 +1,5 @@
---- 1	2018-12-21 12:16:26.000000000 -0500
-+++ 2	2018-12-21 12:19:34.000000000 -0500
+--- /lib/netifd/hostapd.sh	2018-12-21 12:16:26.000000000 -0500
++++ /lib/netifd/hostapd.sh	2018-12-21 12:19:34.000000000 -0500
 @@ -180,6 +180,7 @@
  	config_add_int dynamic_vlan vlan_naming
  	config_add_string vlan_tagged_interface vlan_bridge
